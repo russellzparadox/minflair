@@ -189,7 +189,7 @@ def get_cpu_temp():
                     return f"{t // 1000}°C"
             except Exception:
                 pass
-    return "55°C"
+    return "N/A"
 
 
 def get_uptime():

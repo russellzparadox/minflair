@@ -37,6 +37,11 @@ Rectangle {
             visible: RecorderService.running
         }
 
+        SystemUsageIndicator {
+            side: "right"
+            Layout.alignment: Qt.AlignVCenter
+        }
+
         Rectangle {
             id: statusCapsule
 

@@ -41,6 +41,11 @@ Rectangle {
             visible: true
         }
 
+        SystemUsageIndicator {
+            side: "left"
+            Layout.alignment: Qt.AlignVCenter
+        }
+
     }
 
 }

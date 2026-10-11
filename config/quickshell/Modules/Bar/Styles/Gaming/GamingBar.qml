@@ -90,6 +90,10 @@ Item {
             bgColor: "transparent"
         }
 
+        SystemUsageIndicator {
+            side: "left"
+        }
+
     }
 
     Rectangle {
@@ -133,6 +137,10 @@ Item {
 
         MediaButton {
             anchors.verticalCenter: parent.verticalCenter
+        }
+
+        SystemUsageIndicator {
+            side: "right"
         }
 
         Rectangle {

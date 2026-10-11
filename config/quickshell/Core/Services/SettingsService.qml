@@ -38,6 +38,14 @@ Item {
     property string barSlotR1: "recording"
     property string barSlotR2: "control_center"
     property string barSlotR3: "tray"
+    property bool barSysUsageEnabled: true
+    property bool barSysUsageCpu: true
+    property bool barSysUsageRam: true
+    property bool barSysUsageTemp: false
+    property bool barSysUsageGpu: false
+    property string barSysUsageStyle: "text"
+    property int barSysUsageInterval: 2
+    property string barSysUsagePosition: "right"
     readonly property int barWidgetHeight: 28
 
     function saveSettings() {
@@ -203,6 +211,46 @@ Item {
             saveSettings();
 
     }
+    onBarSysUsageEnabledChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onBarSysUsageCpuChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onBarSysUsageRamChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onBarSysUsageTempChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onBarSysUsageGpuChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onBarSysUsageStyleChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onBarSysUsageIntervalChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
+    onBarSysUsagePositionChanged: {
+        if (settingsLoaded)
+            saveSettings();
+
+    }
 
     Timer {
         id: saveTimer
@@ -258,7 +306,15 @@ Item {
                 "barSlotC2": settingsService.barSlotC2,
                 "barSlotR1": settingsService.barSlotR1,
                 "barSlotR2": settingsService.barSlotR2,
-                "barSlotR3": settingsService.barSlotR3
+                "barSlotR3": settingsService.barSlotR3,
+                "barSysUsageEnabled": settingsService.barSysUsageEnabled,
+                "barSysUsageCpu": settingsService.barSysUsageCpu,
+                "barSysUsageRam": settingsService.barSysUsageRam,
+                "barSysUsageTemp": settingsService.barSysUsageTemp,
+                "barSysUsageGpu": settingsService.barSysUsageGpu,
+                "barSysUsageStyle": settingsService.barSysUsageStyle,
+                "barSysUsageInterval": settingsService.barSysUsageInterval,
+                "barSysUsagePosition": settingsService.barSysUsagePosition
             };
             settingsSaver.command = ["sh", "-c", "mkdir -p ~/.cache/quickshell && cat << 'EOF' > ~/.cache/quickshell/settings_prefs.json\n" + JSON.stringify(data) + "\nEOF"];
             settingsSaver.running = true;
@@ -443,6 +499,30 @@ Item {
 
                         if (prefs.barSlotR3 !== undefined)
                             settingsService.barSlotR3 = prefs.barSlotR3;
+
+                        if (prefs.barSysUsageEnabled !== undefined)
+                            settingsService.barSysUsageEnabled = prefs.barSysUsageEnabled;
+
+                        if (prefs.barSysUsageCpu !== undefined)
+                            settingsService.barSysUsageCpu = prefs.barSysUsageCpu;
+
+                        if (prefs.barSysUsageRam !== undefined)
+                            settingsService.barSysUsageRam = prefs.barSysUsageRam;
+
+                        if (prefs.barSysUsageTemp !== undefined)
+                            settingsService.barSysUsageTemp = prefs.barSysUsageTemp;
+
+                        if (prefs.barSysUsageGpu !== undefined)
+                            settingsService.barSysUsageGpu = prefs.barSysUsageGpu;
+
+                        if (prefs.barSysUsageStyle !== undefined)
+                            settingsService.barSysUsageStyle = prefs.barSysUsageStyle;
+
+                        if (prefs.barSysUsageInterval !== undefined)
+                            settingsService.barSysUsageInterval = prefs.barSysUsageInterval;
+
+                        if (prefs.barSysUsagePosition !== undefined)
+                            settingsService.barSysUsagePosition = prefs.barSysUsagePosition;
 
                     } catch (e) {
                         console.error("Error loading settings: " + e);

@@ -24,7 +24,11 @@ Item {
     property bool hasGpu: false
     property real cpuUsage: 0
     property real memUsed: 0
+    property real memUsage: 0
+    property real cpuTemp: -1
+    property real gpuUsage: -1
     property string uptime: ""
+    readonly property int statsIntervalMs: Math.max(1, SettingsService.barSysUsageInterval) * 1000
 
     Component.onCompleted: {
         if (!staticInfoProc.running)
@@ -33,6 +37,11 @@ Item {
         if (!statsProc.running)
             statsProc.running = true;
 
+    }
+    // The daemon takes its interval as an argument, so restart it to pick up a change.
+    onStatsIntervalMsChanged: {
+        statsProc.running = false;
+        statsProc.running = true;
     }
 
     Timer {
@@ -86,7 +95,7 @@ Item {
     Process {
         id: statsProc
 
-        command: ["python3", Quickshell.shellDir + "/Scripts/system/get_processes.py", "4000", "cpu", "--daemon", "--no-processes"]
+        command: ["python3", Quickshell.shellDir + "/Scripts/system/get_processes.py", String(root.statsIntervalMs), "cpu", "--daemon", "--no-processes"]
         running: true
         onExited: (exitCode) => {
             restartTimer.start();
@@ -103,8 +112,14 @@ Item {
                         let sys = parsedData.system;
                         root.cpuUsage = (sys.cpu_usage !== undefined) ? sys.cpu_usage : 0;
                         root.memUsed = (sys.mem_used_gb !== undefined) ? sys.mem_used_gb : 0;
+                        root.memUsage = (sys.mem_usage !== undefined) ? sys.mem_usage : 0;
+                        let temp = parseInt(sys.cpu_temp);
+                        root.cpuTemp = isNaN(temp) ? -1 : temp;
                         root.uptime = sys.uptime || "";
                     }
+                    if (parsedData.gpu)
+                        root.gpuUsage = parsedData.gpu.has_gpu ? parsedData.gpu.usage : -1;
+
                 } catch (e) {
                     console.error("Error parsing stats JSON: " + e);
                 }
