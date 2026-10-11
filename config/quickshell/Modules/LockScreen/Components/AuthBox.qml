@@ -15,6 +15,7 @@ Item {
     property bool authFailed: false
     property bool authenticating: false
     property bool locked: true
+    property string authError: ""
 
     signal passwordChanged(string text)
     signal submitPassword(string pwd)
@@ -498,10 +499,13 @@ Item {
         // Status text / hint
         ThemedText {
             Layout.alignment: Qt.AlignHCenter
-            text: rootBox.authFailed ? "Incorrect password. Please try again." : (rootBox.authenticating ? "Verifying credentials..." : "Press Enter to unlock • Esc to clear")
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            text: rootBox.authError !== "" ? rootBox.authError : (rootBox.authFailed ? "Incorrect password. Please try again." : (rootBox.authenticating ? "Verifying credentials..." : "Press Enter to unlock • Esc to clear"))
             customSize: 11
-            color: rootBox.authFailed ? Theme.accentComplementary : Theme.muted
-            font.bold: rootBox.authFailed
+            color: (rootBox.authFailed || rootBox.authError !== "") ? Theme.accentComplementary : Theme.muted
+            font.bold: rootBox.authFailed || rootBox.authError !== ""
 
             Behavior on color {
                 ColorAnimation {

@@ -437,6 +437,7 @@ Item {
                             backgroundItem: bgRect
                             typedPassword: root.typedPassword
                             authFailed: ipcController.authFailed
+                            authError: ipcController.authError
                             authenticating: ipcController.authenticating
                             locked: lockManager.locked
                             onPasswordChanged: (text) => {
