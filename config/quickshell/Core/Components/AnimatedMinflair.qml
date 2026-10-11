@@ -93,6 +93,14 @@ Item {
             id: introAnim
 
             running: HyprlandService.enableAnimations && root.enableIntroAnim
+            // The intro hides both shapes (scale 0). If it is cut short, e.g. the power
+            // profile turns animations off at startup, restore the rest state so the star stays visible.
+            onStopped: {
+                mainStarShape.scale = 1;
+                xStarShape.scale = 1;
+                mainStarShape.rotation = 0;
+                xStarShape.rotation = 45;
+            }
 
             PropertyAction {
                 target: mainStarShape
