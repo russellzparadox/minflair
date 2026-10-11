@@ -487,7 +487,8 @@ Item {
                     "German": "de",
                     "Italian": "it",
                     "Portuguese": "pt",
-                    "Russian": "ru"
+                    "Russian": "ru",
+                    "Persian": "ir"
                 };
                 // Try exact match first
                 if (layoutMap[raw] !== undefined) {

@@ -30,7 +30,8 @@ AppContainer {
                             "de": "German",
                             "it": "Italian",
                             "pt": "Portuguese",
-                            "ru": "Russian"
+                            "ru": "Russian",
+                            "ir": "Persian"
                         };
                         return nameMap[modelData] || modelData;
                     }
@@ -70,14 +71,15 @@ AppContainer {
                 "German",
                 "Italian",
                 "Portuguese",
-                "Russian"
+                "Russian",
+                "Persian"
             ]
             currentIndex: 0
             onActivated: (index) => {
                 if (index === 0) return;
                 
                 let codeMap = [
-                    "", "us", "latam", "es", "fr", "de", "it", "pt", "ru"
+                    "", "us", "latam", "es", "fr", "de", "it", "pt", "ru", "ir"
                 ];
                 let code = codeMap[index];
                 if (SettingsService.enabledKbLayouts.indexOf(code) === -1) {
