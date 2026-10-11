@@ -40,10 +40,10 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
 hl.bind(mainMod .. " + C", hl.dsp.window.center())
 -- # Pin Window on All Workspaces
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.window.pin())
--- # Minimize Window to Scratchpad
-hl.bind(mainMod .. " + N", hl.dsp.window.move({ workspace = "special:minimized", silent = true }))
--- # Restore Minimized Windows
-hl.bind(mainMod .. " + SHIFT + N", hl.dsp.workspace.toggle_special("minimized"))
+-- # Toggle Scratchpad
+hl.bind(mainMod .. " + N", hl.dsp.workspace.toggle_special("minimized"))
+-- # Send Window to Scratchpad
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.window.move({ workspace = "special:minimized", follow = false }))
 
 -- ## Tools
 
@@ -178,17 +178,18 @@ hl.bind(mainMod .. " + 8", hl.dsp.focus({ workspace = 8 }))
 hl.bind(mainMod .. " + 9", hl.dsp.focus({ workspace = 9 }))
 hl.bind(mainMod .. " + 0", hl.dsp.focus({ workspace = 10 }))
 
--- # Send Window to Workspace 1..0
-hl.bind(mainMod .. " + SHIFT + 1", hl.dsp.window.move({ workspace = 1 }))
-hl.bind(mainMod .. " + SHIFT + 2", hl.dsp.window.move({ workspace = 2 }))
-hl.bind(mainMod .. " + SHIFT + 3", hl.dsp.window.move({ workspace = 3 }))
-hl.bind(mainMod .. " + SHIFT + 4", hl.dsp.window.move({ workspace = 4 }))
-hl.bind(mainMod .. " + SHIFT + 5", hl.dsp.window.move({ workspace = 5 }))
-hl.bind(mainMod .. " + SHIFT + 6", hl.dsp.window.move({ workspace = 6 }))
-hl.bind(mainMod .. " + SHIFT + 7", hl.dsp.window.move({ workspace = 7 }))
-hl.bind(mainMod .. " + SHIFT + 8", hl.dsp.window.move({ workspace = 8 }))
-hl.bind(mainMod .. " + SHIFT + 9", hl.dsp.window.move({ workspace = 9 }))
-hl.bind(mainMod .. " + SHIFT + 0", hl.dsp.window.move({ workspace = 10 }))
+-- # Send Window to Workspace 1..0 (1..0)
+-- code:N binds the physical key, so SHIFT+digit does not depend on the shifted keysym (! @ # ...)
+hl.bind(mainMod .. " + SHIFT + code:10", hl.dsp.window.move({ workspace = 1 }))
+hl.bind(mainMod .. " + SHIFT + code:11", hl.dsp.window.move({ workspace = 2 }))
+hl.bind(mainMod .. " + SHIFT + code:12", hl.dsp.window.move({ workspace = 3 }))
+hl.bind(mainMod .. " + SHIFT + code:13", hl.dsp.window.move({ workspace = 4 }))
+hl.bind(mainMod .. " + SHIFT + code:14", hl.dsp.window.move({ workspace = 5 }))
+hl.bind(mainMod .. " + SHIFT + code:15", hl.dsp.window.move({ workspace = 6 }))
+hl.bind(mainMod .. " + SHIFT + code:16", hl.dsp.window.move({ workspace = 7 }))
+hl.bind(mainMod .. " + SHIFT + code:17", hl.dsp.window.move({ workspace = 8 }))
+hl.bind(mainMod .. " + SHIFT + code:18", hl.dsp.window.move({ workspace = 9 }))
+hl.bind(mainMod .. " + SHIFT + code:19", hl.dsp.window.move({ workspace = 10 }))
 
 -- # Previous / Next Workspace
 hl.bind(mainMod .. " + CTRL + left", hl.dsp.focus({ workspace = "-1" }))
@@ -197,11 +198,6 @@ hl.bind(mainMod .. " + CTRL + right", hl.dsp.focus({ workspace = "+1" }))
 -- # Scroll Through Workspaces
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
-
--- # Toggle Scratchpad
--- UNPARSED: #bind = $mainMod, S, togglespecialworkspace, magic
--- # Send to Scratchpad
--- UNPARSED: #bind = $mainMod SHIFT, S, movetoworkspace, special:magic
 
 -- ## Mouse Binds
 
