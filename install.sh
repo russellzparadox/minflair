@@ -60,11 +60,15 @@ dependencies=(
   xclip xdg-desktop-portal-gtk zsh zsh-autosuggestions zsh-history-substring-search
   zsh-syntax-highlighting brightnessctl blueman bluez bluez-utils grim slurp cliphist
   fastfetch neovim curl unrar socat qt6-imageformats mpv fnm polkit-gnome ntfs-3g libnotify
-  gnome-keyring libsecret awww playerctl ffmpeg exfatprogs dosfstools gvfs-afc power-profiles-daemon
-  sof-firmware gamemode python-pam less qt5ct qt6ct papirus-icon-theme wf-recorder
+  gnome-keyring libsecret playerctl ffmpeg exfatprogs dosfstools gvfs-afc power-profiles-daemon
+  sof-firmware gamemode less qt5ct qt6ct papirus-icon-theme wf-recorder
   tesseract tesseract-data-eng tesseract-data-spa tree-sitter-cli
   noto-fonts ttf-liberation ttf-roboto zoxide qt6-5compat
 )
+
+# awww gets its own call: pacman aborts the whole batch below on any conflict, which left it uninstalled
+sudo pacman -S --needed --noconfirm awww ||
+  warn "awww (wallpaper daemon) could not be installed; wallpapers will not show."
 
 sudo pacman -S --needed --noconfirm "${dependencies[@]}" ||
   warn "Some official packages could not be installed (check the messages above)."

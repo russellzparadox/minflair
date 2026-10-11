@@ -126,15 +126,18 @@ QtObject {
     }
 
     wallpaperLoader: Process {
-        command: ["cat", Quickshell.env("HOME") + "/.cache/quickshell/current_wallpaper"]
+        // Startup restore: the saved wallpaper if its file still exists, else a random one; empty output means nothing to show
+        command: ["bash", "-c", "f=$(cat ~/.cache/quickshell/current_wallpaper 2>/dev/null); if [ -n \"$f\" ] && [ -f ~/Pictures/Wallpapers/\"$f\" ]; then echo ~/Pictures/Wallpapers/\"$f\"; else find ~/Pictures/Wallpapers -maxdepth 2 -type f 2>/dev/null | grep -iE '\\.(jpg|jpeg|png|webp|gif)$' | shuf -n 1; fi"]
         onExited: function(exitCode) {
-            if (exitCode === 0) {
-                let name = wallpaperLoaderOutput.text.trim();
-                if (name) {
-                    root.currentWallpaper = name;
-                    root.currentWallpaperPath = name.startsWith("/") ? name : (Quickshell.env("HOME") + "/Pictures/Wallpapers/" + name);
-                }
-            }
+            let path = wallpaperLoaderOutput.text.trim();
+            if (!path)
+                return ;
+
+            let name = path.split('/').pop();
+            root.currentWallpaper = name;
+            root.currentWallpaperPath = path;
+            root.saveCurrentWallpaper(name);
+            root.applyWallpaperInstant(path);
         }
 
         stdout: StdioCollector {
