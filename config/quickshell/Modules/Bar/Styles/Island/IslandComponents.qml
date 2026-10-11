@@ -12,6 +12,7 @@ import qs.Modules.Music as MusicModule
 import qs.Modules.NotificationCenter as NotificationCenterModule
 import qs.Modules.PowerMenu as PowerMenuModule
 import qs.Modules.ScreenCapture as ScreenCaptureModule
+import qs.Modules.Todo as TodoModule
 import qs.Modules.WallpaperSelector as WallpaperModule
 
 Item {
@@ -87,6 +88,8 @@ Item {
             return screenshotComp;
         case "powerMenu":
             return powerMenuComp;
+        case "todo":
+            return todoComp;
         default:
             return null;
         }
@@ -179,6 +182,15 @@ Item {
         id: powerMenuComp
 
         PowerMenuModule.PowerMenuContent {
+            widget: root.islandBar
+        }
+
+    }
+
+    Component {
+        id: todoComp
+
+        TodoModule.TodoContent {
             widget: root.islandBar
         }
 

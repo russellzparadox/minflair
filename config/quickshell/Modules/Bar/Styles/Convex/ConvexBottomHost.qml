@@ -10,6 +10,7 @@ import qs.Modules.Clipboard
 import qs.Modules.Launcher
 import qs.Modules.PowerMenu
 import qs.Modules.ScreenCapture
+import qs.Modules.Todo
 import qs.Modules.WallpaperSelector
 
 Item {
@@ -32,6 +33,9 @@ Item {
 
         if (AppState.isWidgetOpen("screenshot"))
             return "screenshot";
+
+        if (AppState.isWidgetOpen("todo"))
+            return "todo";
 
         return "";
     }
@@ -65,6 +69,8 @@ Item {
             return powerMenuComp;
         case "screenshot":
             return screenshotComp;
+        case "todo":
+            return todoComp;
         default:
             return null;
         }
@@ -100,6 +106,9 @@ Item {
 
         if (typeof loader.item.resetScreenCapture === "function")
             loader.item.resetScreenCapture();
+
+        if (typeof loader.item.resetTodo === "function")
+            loader.item.resetTodo();
 
         Qt.callLater(() => {
             if (loader.item) {
@@ -183,18 +192,18 @@ Item {
         id: contentContainer
 
         readonly property real currentWidth: smoothWidth
-        readonly property real currentHeight: Math.max(smoothHeight * openProgress, 0.01)
 
         clip: true
         width: Math.round(currentWidth)
-        height: Math.round(currentHeight)
+        height: Math.round(smoothHeight)
         Keys.forwardTo: (loader.item && loader.item.initialFocusItem) ? [loader.item.initialFocusItem] : []
         Keys.enabled: root.isOpen
         Keys.onEscapePressed: {
             root.close();
         }
         x: Math.round((root.width - currentWidth) / 2)
-        y: Math.round(smoothHeight - currentHeight)
+        // Slides up from below the drawer base (travel is hidden by the bezel/screen edge)
+        y: Math.round(smoothHeight * (1 - openProgress))
 
         ConvexDrawerShape {
             id: bg
@@ -296,12 +305,21 @@ Item {
 
     }
 
-    // Island-matched opening/closing physics
+    Component {
+        id: todoComp
+
+        TodoContent {
+            widget: widgetProxy
+        }
+
+    }
+
+    // Opening/closing slide, same timing as the sidebars
     Behavior on openProgress {
         enabled: HyprlandService.enableAnimations
 
         NumberAnimation {
-            duration: root.isClosing ? Constants.animNormal : Constants.animExpressive
+            duration: Constants.animNormal
             easing.type: root.isClosing ? Easing.OutCubic : Easing.OutQuint
             onRunningChanged: {
                 if (!running && root.isClosing) {

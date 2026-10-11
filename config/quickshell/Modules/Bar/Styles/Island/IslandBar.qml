@@ -10,7 +10,7 @@ Item {
     required property var notificationService
     property var mainPanelWidget: null
     readonly property string currentPanel: AppState.activeWidget
-    readonly property bool isHostPanel: SettingsService.barIslandMode && (currentPanel === "clock" || currentPanel === "dashboard" || currentPanel === "controlCenter" || currentPanel === "notificationsCenter" || currentPanel === "music" || currentPanel === "launcher" || currentPanel === "clipboard" || currentPanel === "wallpaper" || currentPanel === "screenshot" || currentPanel === "powerMenu")
+    readonly property bool isHostPanel: SettingsService.barIslandMode && (currentPanel === "clock" || currentPanel === "dashboard" || currentPanel === "controlCenter" || currentPanel === "notificationsCenter" || currentPanel === "music" || currentPanel === "launcher" || currentPanel === "clipboard" || currentPanel === "wallpaper" || currentPanel === "screenshot" || currentPanel === "powerMenu" || currentPanel === "todo")
     property string activePanelName: ""
     readonly property string effectivePanel: (AppState.activeWidget !== "" && islandBar.isHostPanel) ? AppState.activeWidget : activePanelName
     property bool isOpen: false
@@ -20,7 +20,7 @@ Item {
     property string currentIslandTarget: ""
     readonly property string activeIslandTarget: (isOpen || isRemoving) && currentIslandTarget !== "" ? currentIslandTarget : getTargetPill(effectivePanel)
     readonly property bool isOverlayActive: isOpen || (leftPill.openProgress > 0.001) || (centerPill.openProgress > 0.001) || (rightPill.openProgress > 0.001) || isRemoving
-    readonly property bool needsFocus: (effectivePanel === "launcher" || effectivePanel === "clipboard" || effectivePanel === "wallpaper" || effectivePanel === "powerMenu" || effectivePanel === "screenshot")
+    readonly property bool needsFocus: (effectivePanel === "launcher" || effectivePanel === "clipboard" || effectivePanel === "wallpaper" || effectivePanel === "powerMenu" || effectivePanel === "screenshot" || effectivePanel === "todo")
     readonly property bool hasActiveNotifications: centerPill.hasActiveNotifications
     readonly property real notifProgress: centerPill.notifProgress
     readonly property bool isOccupied: isOverlayActive || hasActiveNotifications
@@ -99,7 +99,7 @@ Item {
                 return "center";
 
         }
-        if (panel === "clock" || panel === "launcher" || panel === "clipboard" || panel === "wallpaper" || panel === "notificationsCenter" || panel === "screenshot" || panel === "powerMenu")
+        if (panel === "clock" || panel === "launcher" || panel === "clipboard" || panel === "wallpaper" || panel === "notificationsCenter" || panel === "screenshot" || panel === "powerMenu" || panel === "todo")
             return "center";
 
         return "";
@@ -130,6 +130,8 @@ Item {
                 it.resetPowerMenu();
             else if (it.resetScreenCapture)
                 it.resetScreenCapture();
+            else if (it.resetTodo)
+                it.resetTodo();
             if (it.initialFocusItem) {
                 if (it.initialFocusItem.textField)
                     it.initialFocusItem.textField.forceActiveFocus();

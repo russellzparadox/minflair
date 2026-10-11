@@ -9,7 +9,7 @@ Item {
 
     property string activeWidget: ""
     property var activeWidgetsList: []
-    readonly property bool isFocusWidgetOpen: isWidgetOpen("launcher") || isWidgetOpen("clipboard") || isWidgetOpen("wallpaper") || isWidgetOpen("powerMenu") || isWidgetOpen("screenshot")
+    readonly property bool isFocusWidgetOpen: isWidgetOpen("launcher") || isWidgetOpen("clipboard") || isWidgetOpen("wallpaper") || isWidgetOpen("powerMenu") || isWidgetOpen("screenshot") || isWidgetOpen("todo")
     property int pendingSettingsTab: -1
     property var launcherApps: []
     property bool socketsCleaned: true
@@ -25,7 +25,7 @@ Item {
     property bool hasActiveNotification: false
     property real activeNotificationWidth: 0
     property real activeNotificationHeight: 0
-    readonly property var focusWidgets: ["launcher", "clipboard", "wallpaper", "screenshot", "powerMenu"]
+    readonly property var focusWidgets: ["launcher", "clipboard", "wallpaper", "screenshot", "powerMenu", "todo"]
     readonly property var standaloneWindows: ["minflair_settings", "minflair_keybinds", "packagemanager"]
 
     signal toggleWidget(string widgetId)

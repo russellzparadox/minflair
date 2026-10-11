@@ -16,6 +16,7 @@ import qs.Modules.Music
 import qs.Modules.NotificationCenter
 import qs.Modules.PowerMenu
 import qs.Modules.ScreenCapture
+import qs.Modules.Todo
 import qs.Modules.WallpaperSelector
 
 PanelWindow {
@@ -34,9 +35,10 @@ PanelWindow {
     readonly property bool isWallpaper: AppState.isWidgetOpen("wallpaper")
     readonly property bool isPowerMenu: AppState.isWidgetOpen("powerMenu")
     readonly property bool isScreenshot: AppState.isWidgetOpen("screenshot")
+    readonly property bool isTodo: AppState.isWidgetOpen("todo")
     readonly property bool isTray: (AppState.activeWidget || "").startsWith("systemTray_")
-    readonly property bool hasAnyOpen: isControlCenter || isNotificationsCenter || isDashboard || isMusic || isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot || isTray
-    readonly property bool needsFocus: isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot
+    readonly property bool hasAnyOpen: isControlCenter || isNotificationsCenter || isDashboard || isMusic || isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot || isTodo || isTray
+    readonly property bool needsFocus: isLauncher || isClipboard || isWallpaper || isPowerMenu || isScreenshot || isTodo
     readonly property int activeTrayIndex: {
         let targetId = AppState.activeWidget && AppState.activeWidget.startsWith("systemTray_") ? AppState.activeWidget : "";
         if (targetId && targetId.startsWith("systemTray_")) {
@@ -152,6 +154,16 @@ PanelWindow {
                     screenshotContent.initialFocusItem.forceActiveFocus();
 
             });
+        }
+    }
+    onIsTodoChanged: {
+        if (isTodo) {
+            if (todoContent && typeof todoContent.resetTodo === "function")
+                todoContent.resetTodo();
+
+            if (todoContent && todoContent.initialFocusItem)
+                todoContent.initialFocusItem.forceActiveFocus();
+
         }
     }
     Keys.onEscapePressed: {
@@ -493,6 +505,34 @@ PanelWindow {
             id: screenshotContent
 
             anchors.centerIn: parent
+            widget: widgetProxy
+        }
+
+    }
+
+    Rectangle {
+        id: todoContainer
+
+        visible: root.isTodo
+        enabled: visible
+        anchors.centerIn: parent
+        width: Math.min(todoContent.implicitWidth + 32, root.width - 40)
+        height: Math.min(todoContent.implicitHeight + 32, root.height - 40)
+        color: Theme.bg
+        radius: 0
+        border.width: 1
+        border.color: Theme.border
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.AllButtons
+        }
+
+        TodoContent {
+            id: todoContent
+
+            anchors.fill: parent
+            anchors.margins: Constants.sizeLg
             widget: widgetProxy
         }
 

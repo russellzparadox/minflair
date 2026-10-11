@@ -25,7 +25,7 @@ QtObject {
     })
     readonly property bool isLocked: Object.keys(locks).length > 0
     readonly property bool isObscured: {
-        let isIslandHostPopup = AppState.isWidgetOpen("dashboard") || AppState.isWidgetOpen("controlCenter") || AppState.isWidgetOpen("music") || AppState.isWidgetOpen("launcher") || AppState.isWidgetOpen("clipboard") || AppState.isWidgetOpen("wallpaper");
+        let isIslandHostPopup = AppState.isWidgetOpen("dashboard") || AppState.isWidgetOpen("controlCenter") || AppState.isWidgetOpen("music") || AppState.isWidgetOpen("launcher") || AppState.isWidgetOpen("clipboard") || AppState.isWidgetOpen("wallpaper") || AppState.isWidgetOpen("todo");
         if (SettingsService.barIslandMode)
             return isIslandHostPopup || AppState.isIslandOpen;
 

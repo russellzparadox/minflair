@@ -1,15 +1,20 @@
 import QtQuick
 import qs.Core.Components
+import qs.Core.Services
 import qs.Modules.Clipboard
 import qs.Modules.KeybindsCheatSheet
 import qs.Modules.Launcher
 import qs.Modules.LockScreen
 import qs.Modules.PackageManager
 import qs.Modules.Settings
+import qs.Modules.Todo
 import qs.Modules.WallpaperSelector
 
 Item {
     id: root
+
+    // Loads the saved todo list at shell start, before the panel is ever opened
+    Component.onCompleted: TodoService.load()
 
     // Bar & media sockets
     WidgetLoader {
@@ -45,6 +50,17 @@ Item {
 
         sourceComponent: Component {
             Clipboard {
+            }
+
+        }
+
+    }
+
+    WidgetLoader {
+        widgetId: "todo"
+
+        sourceComponent: Component {
+            Todo {
             }
 
         }
