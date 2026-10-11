@@ -32,7 +32,7 @@ Item {
     property real smoothHeight: targetHeight
     property int targetWidth: preferredWidth > 0 ? preferredWidth : widgetWidth
     property real smoothWidth: targetWidth
-    property int animationDuration: HyprlandService.enableAnimations ? Constants.animExpressive : 0
+    property int animationDuration: HyprlandService.enableAnimations ? Constants.animNormal : 0
     readonly property int closeDuration: HyprlandService.enableAnimations ? Constants.animNormal : 0
     property color backgroundColor: Theme.bg
     property bool animateHeight: false
@@ -105,12 +105,13 @@ Item {
             id: animContainer
 
             readonly property real openX: root.positionAtLeft ? 0 : (_screenWidth - smoothWidth)
-            readonly property real currentWidth: Math.max(smoothWidth * bounceProgress, 0.01)
+            // Panel slides in/out from its anchored screen edge; clipped off-screen when closed
+            readonly property real slideOffset: Math.round((1 - bounceProgress) * smoothWidth)
 
-            width: Math.round(currentWidth)
+            width: Math.round(smoothWidth)
             height: Math.round(smoothHeight)
             clip: true
-            x: Math.round(root.positionAtLeft ? openX : (openX + smoothWidth - currentWidth))
+            x: Math.round(root.positionAtLeft ? openX - slideOffset : openX + slideOffset)
             y: root.alignTop ? Math.round(root.topOffset) : Math.round((_screenHeight - targetHeight) / 2)
 
             MouseArea {
