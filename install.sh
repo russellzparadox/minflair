@@ -227,15 +227,20 @@ fi
 
 # ── 6. SDDM theme ─────────────────────────────────────────────────────────────
 log "Configuring SDDM theme..."
-if [ -f "$REPO_DIR/etc/sddm.conf" ]; then
-  if [ -f /etc/sddm.conf ]; then
-    cp /etc/sddm.conf "$BACKUP_DIR/sddm.conf.bak"
-    ok "Existing /etc/sddm.conf backed up."
-  fi
-  sudo cp "$REPO_DIR/etc/sddm.conf" /etc/sddm.conf
-  ok "SDDM theme set to tokyo-night."
+SDDM_THEME=$(sed -n 's/^Current=//p' "$REPO_DIR/etc/sddm.conf" 2>/dev/null)
+if [ -z "$SDDM_THEME" ]; then
+  warn "No theme in etc/sddm.conf, skipping SDDM config."
+elif [ ! -d "/usr/share/sddm/themes/$SDDM_THEME" ]; then
+  warn "SDDM theme '$SDDM_THEME' is not installed, keeping current SDDM theme."
+elif [ -f /etc/sddm.conf ] && grep -q '^Current=' /etc/sddm.conf; then
+  cp /etc/sddm.conf "$BACKUP_DIR/sddm.conf.bak"
+  # Only swap the theme line; keep autologin, cursor and other settings.
+  sudo sed -i "s/^Current=.*/Current=$SDDM_THEME/" /etc/sddm.conf
+  ok "SDDM theme set to $SDDM_THEME."
 else
-  warn "etc/sddm.conf not found in repo, skipping SDDM config."
+  [ -f /etc/sddm.conf ] && cp /etc/sddm.conf "$BACKUP_DIR/sddm.conf.bak"
+  printf '\n[Theme]\nCurrent=%s\n' "$SDDM_THEME" | sudo tee -a /etc/sddm.conf >/dev/null
+  ok "SDDM theme set to $SDDM_THEME."
 fi
 
 # ── 7. disable dunst (notifications handled by QuickShell) ────────────────────
