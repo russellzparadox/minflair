@@ -106,6 +106,26 @@ Item {
         applyMouseSettingsTimer.restart();
     }
 
+    function applyKbLayouts() {
+        if (!SettingsService.settingsLoaded)
+            return ;
+
+        // Keybinds resolve against the first layout, so it must be Latin.
+        // US leads when enabled; a non-Latin first layout (ru, ir) gets US prepended.
+        let layouts = SettingsService.enabledKbLayouts.slice();
+        let usIdx = layouts.indexOf("us");
+        if (usIdx !== -1) {
+            layouts.splice(usIdx, 1);
+            layouts.unshift("us");
+        } else if (layouts.length === 0 || ["ru", "ir"].indexOf(layouts[0]) !== -1) {
+            layouts.unshift("us");
+        }
+        let idx = Math.max(0, layouts.indexOf(keyboardLayout));
+        changeLayoutProc.command = ["sh", "-c", "hyprctl eval \"hl.config({ input = { kb_layout = '" + layouts.join(",") + "' } })\" && hyprctl switchxkblayout all " + idx];
+        changeLayoutProc.running = false;
+        changeLayoutProc.running = true;
+    }
+
     onEnableAnimationsChanged: {
         if (SettingsService.settingsLoaded && hyprPrefsLoaded && !isSyncing && !DisplayProfileService.gameModeActive) {
             animationsProc.running = false;
@@ -179,12 +199,9 @@ Item {
         }
     }
     onKeyboardLayoutChanged: {
-        if (SettingsService.settingsLoaded) {
+        if (SettingsService.settingsLoaded)
             SettingsService.saveSettings();
-            changeLayoutProc.command = ["hyprctl", "eval", "hl.config({ input = { kb_layout = '" + keyboardLayout + "' } })"];
-            changeLayoutProc.running = false;
-            changeLayoutProc.running = true;
-        }
+
     }
     onHyprBlurChanged: {
         if (hyprPrefsLoaded && !isSyncing)
@@ -397,9 +414,7 @@ Item {
         running: false
         repeat: false
         onTriggered: {
-            changeLayoutProc.command = ["hyprctl", "eval", "hl.config({ input = { kb_layout = '" + hyprlandService.keyboardLayout + "' } })"];
-            changeLayoutProc.running = false;
-            changeLayoutProc.running = true;
+            applyKbLayouts();
         }
     }
 
@@ -446,6 +461,8 @@ Item {
     Connections {
         function onRawEvent(event) {
             if (event.name === "activelayout") {
+                // Restart, not just start: a change during a run would otherwise be dropped
+                activeLayoutProc.running = false;
                 activeLayoutProc.running = true;
             } else if (event.name === "fullscreen") {
                 if (event.data === "0")
@@ -455,6 +472,8 @@ Item {
             } else if (event.name === "activewindow" || event.name === "activewindowv2" || event.name === "workspace" || event.name === "workspacev2") {
                 hyprlandService.checkFullscreen();
             } else if (event.name === "configreloaded") {
+                // A config reload resets kb_layout to userprefs.lua, so re-apply the group
+                hyprlandService.applyKbLayouts();
                 if (DisplayProfileService.gameModeActive)
                     reapplyGameModeTimer.restart();
                 else

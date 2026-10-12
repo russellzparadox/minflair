@@ -83,9 +83,10 @@ Item {
 
     }
     onEnabledKbLayoutsChanged: {
-        if (settingsLoaded)
+        if (settingsLoaded) {
             saveSettings();
-
+            HyprlandService.applyKbLayouts();
+        }
     }
     onGithubUsernameChanged: {
         if (settingsLoaded)

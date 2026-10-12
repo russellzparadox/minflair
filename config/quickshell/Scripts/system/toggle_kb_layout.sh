@@ -1,32 +1,8 @@
 #!/bin/bash
 
-# Parse enabled layouts from settings
-PREFS_FILE="$HOME/.cache/quickshell/settings_prefs.json"
-LAYOUTS_STR=$(jq -r '.enabledKbLayouts | join(" ")' "$PREFS_FILE" 2>/dev/null)
+# Cycle every layout in input:kb_layout. They stay one group with US first,
+# so keybinds keep resolving against US keysyms.
+hyprctl switchxkblayout all next >/dev/null 2>&1 || exit 1
 
-if [ -z "$LAYOUTS_STR" ] || [ "$LAYOUTS_STR" == "null" ]; then
-  LAYOUTS_STR="us latam" # Fallback
-fi
-
-read -a LAYOUTS <<<"$LAYOUTS_STR"
-
-# Get current layout from hyprland
-CURRENT_LAYOUT=$(hyprctl getoption input:kb_layout -j 2>/dev/null | jq -r '.str // empty' 2>/dev/null | xargs)
-
-# Find index of current layout in the array
-IDX=-1
-for i in "${!LAYOUTS[@]}"; do
-  # Support partial matching just in case (e.g. us* -> us)
-  if [[ "$CURRENT_LAYOUT" == "${LAYOUTS[$i]}"* ]]; then
-    IDX=$i
-    break
-  fi
-done
-
-# Calculate next index
-NEXT_IDX=$(((IDX + 1) % ${#LAYOUTS[@]}))
-NEW_LAYOUT="${LAYOUTS[$NEXT_IDX]}"
-
-# Apply
-hyprctl eval "hl.config({input = {kb_layout = '$NEW_LAYOUT'}})" 2>/dev/null || true
-notify-send -r 701 "Keyboard Layout" "Switched to $NEW_LAYOUT" 2>/dev/null || true
+NAME=$(hyprctl devices -j 2>/dev/null | jq -r '(.keyboards | (map(select(.main == true))[0] // .[0])) | .active_keymap' 2>/dev/null)
+notify-send -r 701 "Keyboard Layout" "Switched to ${NAME:-next layout}" 2>/dev/null || true

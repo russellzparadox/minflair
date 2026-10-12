@@ -72,7 +72,7 @@ hl.config({
 	input = {
 		kb_rules = "evdev",
 		kb_model = "pc105",
-		kb_layout = "us,es",
+		kb_layout = "us,ir",
 		follow_mouse = 1,
 		sensitivity = 0,
 		touchpad = {
